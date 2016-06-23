@@ -5,7 +5,7 @@ Installation
 
 Run::
 
-   pip install git+
+   pip install git+https://github.com/andrewbaxter/scrapy-errbackdupefilter
 
 Add this line to ``settings.py``::
 
