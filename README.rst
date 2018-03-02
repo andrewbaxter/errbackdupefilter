@@ -11,6 +11,12 @@ Add this line to ``settings.py``::
 
    DUPEFILTER_CLASS = 'errbackdupefilter.ErrbackDupefilter'
 
+And to your ``SPIDER_MIDDLEWARES``::
+
+   SPIDER_MIDDLEWARES = {
+       'errbackdupefilter.ErrbackDupefilterMiddleware': 2000,
+   }
+
 Example usage
 #############
 
