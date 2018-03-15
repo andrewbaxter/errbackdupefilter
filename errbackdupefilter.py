@@ -1,7 +1,11 @@
 import os
 
 from twisted.python.failure import Failure
+from scrapy.exceptions import NotConfigured
 from scrapy.dupefilters import RFPDupeFilter
+
+
+_middleware = None
 
 
 class Dupefiltered(RuntimeError):
@@ -11,13 +15,9 @@ class Dupefiltered(RuntimeError):
 
 class ErrbackDupefilter(RFPDupeFilter):
     def request_seen(self, request):
-        global _middleware
-        if not _middleware:
-            raise AssertionError(
-                'You must configure ErrbackDupefilterMiddleware')
         fp = self.request_fingerprint(request)
         if fp in self.fingerprints:
-            if request.errback:
+            if _middleware and request.errback:
                 _middleware.queues.append(
                     request.errback(Failure(Dupefiltered(request)))
                 )
@@ -28,7 +28,13 @@ class ErrbackDupefilter(RFPDupeFilter):
 
 
 class ErrbackDupefilterMiddleware(object):
-    def __init__(self):
+    @classmethod
+    def from_crawler(cls, crawler):
+        if not crawler.settings.getbool('ERRBACK_DUPEFILTER_ENABLED'):
+            raise NotConfigured
+        return cls(crawler)
+
+    def __init__(self, crawler):
         global _middleware
         _middleware = self
         self.queues = []

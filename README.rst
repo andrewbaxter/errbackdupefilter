@@ -7,15 +7,16 @@ Run::
 
    pip install git+https://github.com/andrewbaxter/scrapy-errbackdupefilter
 
-Add this line to ``settings.py``::
-
-   DUPEFILTER_CLASS = 'errbackdupefilter.ErrbackDupefilter'
-
-And to your ``SPIDER_MIDDLEWARES``::
+Add this to ``SPIDER_MIDDLEWARES``::
 
    SPIDER_MIDDLEWARES = {
        'errbackdupefilter.ErrbackDupefilterMiddleware': 2000,
    }
+
+Add these lines to ``settings.py``::
+
+   DUPEFILTER_CLASS = 'errbackdupefilter.ErrbackDupefilter'
+   ERRBACK_DUPEFILTER_ENABLED = True
 
 Example usage
 #############
